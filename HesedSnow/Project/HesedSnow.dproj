@@ -131,6 +131,8 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\SOURCE\uMyProcedure.pas"/>
+        <DCCReference Include="..\SOURCE\uMyExcel.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

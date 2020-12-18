@@ -1,15 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{C36E05AD-E0E5-4978-A966-6CB6527EFB45}</ProjectGuid>
+        <ProjectGuid>{7E09E4D8-C332-498D-B598-C3442B7CDE62}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="HesedSnow.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="G:\Dropbox\Delphi\iDent\iDent.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="..\..\ASkinDemo\ASkinDemo.dproj">
+        <Projects Include="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -29,32 +26,23 @@
     <Target Name="HesedSnow:Make">
         <MSBuild Projects="HesedSnow.dproj" Targets="Make"/>
     </Target>
-    <Target Name="iDent">
-        <MSBuild Projects="G:\Dropbox\Delphi\iDent\iDent.dproj"/>
+    <Target Name="BankCardsv3">
+        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj"/>
     </Target>
-    <Target Name="iDent:Clean">
-        <MSBuild Projects="G:\Dropbox\Delphi\iDent\iDent.dproj" Targets="Clean"/>
+    <Target Name="BankCardsv3:Clean">
+        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="iDent:Make">
-        <MSBuild Projects="G:\Dropbox\Delphi\iDent\iDent.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="ASkinDemo">
-        <MSBuild Projects="..\..\ASkinDemo\ASkinDemo.dproj"/>
-    </Target>
-    <Target Name="ASkinDemo:Clean">
-        <MSBuild Projects="..\..\ASkinDemo\ASkinDemo.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ASkinDemo:Make">
-        <MSBuild Projects="..\..\ASkinDemo\ASkinDemo.dproj" Targets="Make"/>
+    <Target Name="BankCardsv3:Make">
+        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="HesedSnow;iDent;ASkinDemo"/>
+        <CallTarget Targets="HesedSnow;BankCardsv3"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="HesedSnow:Clean;iDent:Clean;ASkinDemo:Clean"/>
+        <CallTarget Targets="HesedSnow:Clean;BankCardsv3:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="HesedSnow:Make;iDent:Make;ASkinDemo:Make"/>
+        <CallTarget Targets="HesedSnow:Make;BankCardsv3:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

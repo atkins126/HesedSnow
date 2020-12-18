@@ -9,7 +9,8 @@ uses
   uFrameSLG in '..\SOURCE\uFrameSLG.pas' {frmSLG: TFrame},
   uFrameNalogy in '..\SOURCE\uFrameNalogy.pas' {frmNalogy: TFrame},
   uMyProcedure in '..\SOURCE\uMyProcedure.pas',
-  uMyExcel in '..\SOURCE\uMyExcel.pas';
+  uMyExcel in '..\SOURCE\uMyExcel.pas',
+  uDataModul in '..\SOURCE\uDataModul.pas' {DM: TDataModule};
 
 {$R *.res}
 
@@ -17,5 +18,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmyForm, myForm);
+  Application.CreateForm(TDM, DM);
   Application.Run;
 end.

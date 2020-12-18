@@ -24050,7 +24050,7 @@ object myForm: TmyForm
   end
   object sSkinManager1: TsSkinManager
     AnimEffects.BlendOnMoving.Active = True
-    ButtonsOptions.OldGlyphsMode = False
+    ButtonsOptions.OldGlyphsMode = True
     InternalSkins = <
       item
         Name = 'Aluminium (internal)'

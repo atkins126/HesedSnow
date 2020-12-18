@@ -30,12 +30,24 @@ inherited frmVidomost: TfrmVidomost
     Align = alClient
     Caption = 'sPanel1'
     TabOrder = 1
+    object DBGridEhVedomist: TDBGridEh
+      Left = 1
+      Top = 1
+      Width = 1061
+      Height = 662
+      Align = alClient
+      DynProps = <>
+      TabOrder = 0
+      object RowDetailData: TRowDetailPanelControlEh
+      end
+    end
   end
   inherited sFrameAdapter1: TsFrameAdapter
-    Top = 64
+    Left = 264
+    Top = 8
   end
   object OpenDialog: TOpenDialog
-    Left = 96
-    Top = 65
+    Left = 360
+    Top = 9
   end
 end

@@ -1,8 +1,8 @@
 object DM: TDM
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 189
-  Width = 215
+  Height = 250
+  Width = 125
   object tVedomost: TADOTable
     Connection = myConnection
     CursorType = ctStatic
@@ -24,5 +24,11 @@ object DM: TDM
     DataSet = tVedomost
     Left = 16
     Top = 112
+  end
+  object qQuery: TADOQuery
+    Connection = myConnection
+    Parameters = <>
+    Left = 16
+    Top = 168
   end
 end

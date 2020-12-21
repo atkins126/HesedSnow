@@ -11,6 +11,7 @@ object myForm: TmyForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -59,12 +60,26 @@ object myForm: TmyForm
       ShowTodayBtn = True
     end
   end
-  object sStatusBar1: TsStatusBar
+  object statusBar: TsStatusBar
     Left = 0
     Top = 552
     Width = 986
     Height = 19
-    Panels = <>
+    Anchors = [akRight, akBottom]
+    BiDiMode = bdRightToLeft
+    Panels = <
+      item
+        Width = 500
+      end
+      item
+        Width = 50
+      end
+      item
+        Alignment = taRightJustify
+        Width = 200
+      end>
+    ParentBiDiMode = False
+    OnDrawPanel = statusBarDrawPanel
   end
   object panConteiner: TsPanel
     Left = 191
@@ -24047,6 +24062,14 @@ object myForm: TmyForm
         end
       end
     end
+  end
+  object ProgressBar: TsProgressBar
+    Left = 304
+    Top = 16
+    Width = 150
+    Height = 17
+    TabOrder = 4
+    Visible = False
   end
   object sSkinManager1: TsSkinManager
     AnimEffects.BlendOnMoving.Active = True

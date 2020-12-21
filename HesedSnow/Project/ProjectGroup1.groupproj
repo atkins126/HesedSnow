@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{7E09E4D8-C332-498D-B598-C3442B7CDE62}</ProjectGuid>
+        <ProjectGuid>{3F55C90E-E2C6-4311-BEE7-90C7AEE15C4A}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="HesedSnow.dproj">

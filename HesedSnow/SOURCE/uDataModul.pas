@@ -5,11 +5,15 @@ interface
 uses
   System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
 
+  { System.Actions,
+  Vcl.ActnList, IDETheme.ActnCtrls, Vcl.ActnMan;}
+
 type
   TDM = class(TDataModule)
     tVedomost: TADOTable;
     myConnection: TADOConnection;
     dsVedomist: TDataSource;
+    qQuery: TADOQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
@@ -24,7 +28,7 @@ implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
-uses  sStoreUtils, uMainForm;
+uses  sStoreUtils, uMainForm, uFrameVidomist;
 
 {$R *.dfm}
 

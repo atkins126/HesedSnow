@@ -10,7 +10,8 @@ uses
   uFrameNalogy in '..\SOURCE\uFrameNalogy.pas' {frmNalogy: TFrame},
   uMyProcedure in '..\SOURCE\uMyProcedure.pas',
   uMyExcel in '..\SOURCE\uMyExcel.pas',
-  uDataModul in '..\SOURCE\uDataModul.pas' {DM: TDataModule};
+  uDataModul in '..\SOURCE\uDataModul.pas' {DM: TDataModule},
+  uBDlogic in '..\SOURCE\uBDlogic.pas';
 
 {$R *.res}
 

@@ -10,7 +10,8 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.ComCtrls, sPanel, Vcl.ExtCtrls, sFrameAdapter, Vcl.StdCtrls,
   sButton, DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh,
-  EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh, sLabel, Vcl.Mask, DBCtrlsEh;
+  EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh, sLabel, Vcl.Mask, DBCtrlsEh,
+  System.Actions, Vcl.ActnList;
 
 type
   TfrmVidomost = class(TCustomInfoFrame)
@@ -23,9 +24,12 @@ type
     btnCreateVidomist: TsButton;
     sPanel2: TsPanel;
     labInfoStatus: TsLabelFX;
-    DBComboBoxEh1: TDBComboBoxEh;
+    cbVidomist: TDBComboBoxEh;
+    actionList: TActionList;
+    acbtnCreateVidomist: TAction;
     procedure sButton1Click(Sender: TObject);
     procedure btnCreateVidomistClick(Sender: TObject);
+    procedure acbtnCreateVidomistUpdate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,40 +37,114 @@ type
     procedure AfterCreation; override;
     procedure BeforeDestruct; override;
     procedure ImportExcel;
+
+
+
   end;
 
 implementation
 
 {$R *.dfm}
 
-uses uMyProcedure, uMyExcel, uDataModul, uMainForm;
+uses uMyProcedure, uMyExcel, uDataModul, uMainForm, uBDlogic;
+
+procedure TfrmVidomost.acbtnCreateVidomistUpdate(Sender: TObject);
+begin
+  inherited;
+ if cbVidomist.Text.IsEmpty then btnCreateVidomist.Enabled := false else btnCreateVidomist.Enabled := true;
+end;
 
 procedure TfrmVidomost.AfterCreation;
 begin
   inherited;
   DM.tVedomost.Open; //
   labInfoStatus.Caption := 'Завантажте дані для формування відомості';
+
+  if FileExists(ExtractFilePath(ParamStr(0)) + 'items.dat') Then
+  begin // да
+    cbVidomist.Items.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'items.dat');
+  end;
 end;
 
 procedure TfrmVidomost.BeforeDestruct;
 begin
   inherited;
   // надо сделать уничтожение фреймов, выгрузку из памяти
+  cbVidomist.Items.SaveToFile(ExtractFilePath(ParamStr(0)) + 'items.dat');
 end;
 
 procedure TfrmVidomost.btnCreateVidomistClick(Sender: TObject);
+var
+i : integer;
+_step : integer;
+Kurators: TStringList;
+DirectoryNow : String;
 begin
   inherited;
-//
+  //если название Ведомости новое то добавить в историю Названий
+  if not uMyProcedure.isStringAssign(cbVidomist.text, cbVidomist.Items) then
+  begin
+   cbVidomist.Items.Add(cbVidomist.text);
+   cbVidomist.Items.SaveToFile(ExtractFilePath(ParamStr(0)) + 'items.dat');
+  end;
+    labInfoStatus.Shadow.Color := clBlue;
+    labInfoStatus.Caption := 'Створюємо списки кураторів';
+      myForm.ProgressBar.Visible := True;
+      myForm.ProgressBar.Min := 0;
+      myForm.ProgressBar.Max := 100;
+      myForm.ProgressBar.Position := 1;
+
+//1 делаем список кураторов у данной ведомости
+Kurators := TStringList.Create;
+Kurators := CuratorsList('Vidomist','Curator');
+      myForm.ProgressBar.Position := 10;
+
+//2 создаем папку для данной ведомости
+DirectoryNow := cbVidomist.Text +' '+ FormatDateTime('mmmm yyyy', Now);
+  if DirectoryExists(DirectoryNow) then
+   begin
+     DirectoryNow := DirectoryNow + '\';
+   end
+  else
+   begin
+     CreateDir(ExtractFilePath(ParamStr(0)) + DirectoryNow + '\');
+     DirectoryNow := DirectoryNow + '\';
+   end;
+   DirectoryNow := ExtractFilePath(ParamStr(0)) + DirectoryNow;
+
+   myForm.ProgressBar.Position := 20;
+   _step := Trunc((myForm.ProgressBar.Max - myForm.ProgressBar.Position) / Kurators.Count);
+
+//3 для каждого куратора создаем файл с данными
+ for I := 0 to Kurators.Count - 1 do
+ begin
+  ExportExcel(Kurators.Strings[i], DirectoryNow, cbVidomist.Text);
+  myForm.ProgressBar.Position := myForm.ProgressBar.Position + _step;
+  labInfoStatus.Caption := 'Обробка даних по куратору: ' + Kurators.Strings[i];
+ end;
+
+
+
+
+
+
+//4 отправляем файл на почту для каждого куратора
+//5 или печатаем файл на бумаге
+
+
+      labInfoStatus.Shadow.Color := clGreen;
+      labInfoStatus.Caption := 'Створення відомісті УСПІШНО!!!';
+myForm.ProgressBar.Visible := false;
+Kurators.Free;
 end;
 
 procedure TfrmVidomost.ImportExcel;
 var
-  i, m, n, col, z: Integer;
+  i, m, n, col, z: integer;
   ListExcel: Variant;
-  CollectionNameTable: TDictionary<string, Integer>;
+  CollectionNameTable: TDictionary<string, integer>;
 begin
-  //
+
   if uMyExcel.RunExcel(False, False) = True then
     // проверка на инсталл и запуск Excel
     OpenDialog.Filter := 'Файлы MS Excel|*.xls;*.xlsx|';
@@ -77,7 +155,7 @@ begin
   // открываем книгу Excel
   begin
     // MyExcel.Workbooks[1].Worksheets.Count; //кол-во листов в документе
-    myForm.ProgressBar.Visible := true;
+    myForm.ProgressBar.Visible := True;
     MyExcel.ActiveWorkBook.Sheets[1];
     ListExcel := MyExcel.ActiveWorkBook.Sheets[1];
 
@@ -85,7 +163,7 @@ begin
     // последняя заполненная колонка
     // ------------ пробежимся расставим индексы названий столбцов -------------
 
-    CollectionNameTable := TDictionary<string, Integer>.Create();
+    CollectionNameTable := TDictionary<string, integer>.Create();
     for z := 1 to col do
     begin
       if not CollectionNameTable.ContainsKey(MyExcel.Cells[1, z].value) then
@@ -104,10 +182,9 @@ begin
     begin
       CleanOutTable('Vidomist'); // обнуляем таблицу
 
-      progressBar.Min := 0;
-      progressBar.Max := n;
-      progressBar.Position := 1;
-
+      ProgressBar.Min := 0;
+      ProgressBar.Max := n;
+      ProgressBar.Position := 1;
 
       while m <> n do // цикл внешний по записям EXCEL
       begin
@@ -178,9 +255,8 @@ begin
         Inc(m);
         // Application.ProcessMessages;
         Sleep(25);
-        progressBar.Position := m;
+        ProgressBar.Position := m;
       end;
-      // progressBar.Position := 50;
       labInfoStatus.Shadow.Color := clGreen;
       labInfoStatus.Caption := 'Завантаження даних УСПІШНО!!!';
     end;
@@ -192,16 +268,16 @@ begin
   CollectionNameTable.Clear;
   CollectionNameTable.Free;
   DM.tVedomost.Active := False;
-  myForm.ProgressBar.Visible := false;
+  myForm.ProgressBar.Visible := False;
 end;
 
 procedure TfrmVidomost.sButton1Click(Sender: TObject);
 begin
   inherited;
+  labInfoStatus.Caption := 'Завантажте дані для формування відомості';
   ImportExcel;
   DM.tVedomost.Active := True;
   DBGridEhVedomist.DataSource := DM.dsVedomist;
-  btnCreateVidomist.Enabled := true;
 end;
 
 end.

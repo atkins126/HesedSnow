@@ -12,14 +12,13 @@ inherited frmVidomost: TfrmVidomost
     Caption = 'sGradientPanel1'
     ShowCaption = False
     TabOrder = 0
-    ExplicitWidth = 1063
     DesignSize = (
       864
       41)
     object labInfoStatus: TsLabelFX
       Left = 422
       Top = 14
-      Width = 434
+      Width = 163
       Height = 21
       Alignment = taCenter
       Anchors = [akTop, akBottom]
@@ -49,12 +48,11 @@ inherited frmVidomost: TfrmVidomost
     Align = alClient
     Caption = 'sPanel1'
     TabOrder = 1
-    ExplicitWidth = 1063
     object DBGridEhVedomist: TDBGridEh
       Left = 1
       Top = 1
       Width = 862
-      Height = 469
+      Height = 471
       Align = alClient
       DynProps = <>
       Flat = True
@@ -195,17 +193,14 @@ inherited frmVidomost: TfrmVidomost
     end
     object sPanel2: TsPanel
       Left = 1
-      Top = 470
+      Top = 472
       Width = 862
-      Height = 41
+      Height = 39
       Align = alBottom
       TabOrder = 1
-      ExplicitLeft = 109
-      ExplicitTop = 464
-      ExplicitWidth = 746
       DesignSize = (
         862
-        41)
+        39)
       object sLabelFX1: TsLabelFX
         Left = 16
         Top = 12
@@ -218,37 +213,43 @@ inherited frmVidomost: TfrmVidomost
       end
       object btnCreateVidomist: TsButton
         Left = 684
-        Top = 8
+        Top = 6
         Width = 171
         Height = 25
+        Action = acbtnCreateVidomist
         Anchors = [akRight, akBottom]
-        Caption = 'btnCreateVidomist'
         TabOrder = 0
-        OnClick = btnCreateVidomistClick
+        ExplicitTop = 8
       end
-      object DBComboBoxEh1: TDBComboBoxEh
+      object cbVidomist: TDBComboBoxEh
         Left = 128
         Top = 9
         Width = 534
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         DynProps = <>
+        DropDownBox.AutoDrop = True
         EditButtons = <>
-        Items.Strings = (
-          #1097#1097#1097
-          #1076#1076#1076
-          #1073#1073#1073#1073)
         TabOrder = 1
         Visible = True
       end
     end
   end
   inherited sFrameAdapter1: TsFrameAdapter
-    Left = 264
-    Top = 8
+    Left = 152
+    Top = 0
   end
   object OpenDialog: TOpenDialog
-    Left = 360
-    Top = 9
+    Left = 184
+    Top = 1
+  end
+  object actionList: TActionList
+    Left = 216
+    object acbtnCreateVidomist: TAction
+      AutoCheck = True
+      Caption = #1057#1090#1074#1086#1088#1080#1090#1080' '#1074#1110#1076#1086#1084#1110#1089#1090#1100
+      OnExecute = btnCreateVidomistClick
+      OnUpdate = acbtnCreateVidomistUpdate
+    end
   end
 end

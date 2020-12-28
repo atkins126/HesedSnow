@@ -24064,8 +24064,8 @@ object myForm: TmyForm
     end
   end
   object ProgressBar: TsProgressBar
-    Left = 304
-    Top = 16
+    Left = 828
+    Top = 558
     Width = 150
     Height = 17
     TabOrder = 4

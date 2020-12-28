@@ -69,7 +69,7 @@ implementation
 
 {$R *.dfm}
 
-uses uMenu, uDataModul;
+uses uMenu, uDataModul, uFrameVidomist;
 
 { TForm2 }
 

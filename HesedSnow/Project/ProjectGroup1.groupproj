@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{B3BBBA83-EC63-4643-A467-53E36FA4A8CC}</ProjectGuid>
+        <ProjectGuid>{12E5FDBF-D372-4802-AB7B-E72486712826}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="HesedSnow.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj">
+        <Projects Include="G:\Dropbox\Delphi\SNOW\SLG.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="HesedSnow:Make">
         <MSBuild Projects="HesedSnow.dproj" Targets="Make"/>
     </Target>
-    <Target Name="BankCardsv3">
-        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj"/>
+    <Target Name="SLG">
+        <MSBuild Projects="G:\Dropbox\Delphi\SNOW\SLG.dproj"/>
     </Target>
-    <Target Name="BankCardsv3:Clean">
-        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj" Targets="Clean"/>
+    <Target Name="SLG:Clean">
+        <MSBuild Projects="G:\Dropbox\Delphi\SNOW\SLG.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="BankCardsv3:Make">
-        <MSBuild Projects="G:\Dropbox\Delphi\Bank Cards\v3.0\BankCardsv3.dproj" Targets="Make"/>
+    <Target Name="SLG:Make">
+        <MSBuild Projects="G:\Dropbox\Delphi\SNOW\SLG.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="HesedSnow;BankCardsv3"/>
+        <CallTarget Targets="HesedSnow;SLG"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="HesedSnow:Clean;BankCardsv3:Clean"/>
+        <CallTarget Targets="HesedSnow:Clean;SLG:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="HesedSnow:Make;BankCardsv3:Make"/>
+        <CallTarget Targets="HesedSnow:Make;SLG:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

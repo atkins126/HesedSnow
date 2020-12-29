@@ -14,6 +14,12 @@ type
     myConnection: TADOConnection;
     dsVedomist: TDataSource;
     qQuery: TADOQuery;
+    ADOTable1: TADOTable;
+    DataSource1: TDataSource;
+    ADOQuery1: TADOQuery;
+    tUslugy: TADOTable;
+    dsUslugy: TDataSource;
+    qUslugy: TADOQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }

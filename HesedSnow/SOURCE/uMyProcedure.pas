@@ -5,12 +5,14 @@ interface
 uses
   ComObj, ActiveX, Variants, Windows, Messages, SysUtils, Classes, Vcl.Dialogs,
   System.UITypes;
-
-procedure CleanOutTable(tabl: String); // Очистить таблицу от записей
-procedure CleanOutTableAndIndex(tabl: String);
+// Очистить таблицу от записей
+procedure CleanOutTable(tabl: String);
 // Очистка таблицы и обнуление индекса
-Function isStringAssign(s: String; combo: TStrings): boolean;
+procedure CleanOutTableAndIndex(tabl: String);
 // Проверка или есть название Ведомости
+Function isStringAssign(s: String; combo: TStrings): boolean;
+
+function ParseStringUpakovka(s: string): String;
 
 implementation
 
@@ -55,5 +57,21 @@ begin
     end;
    end;
 end;
+
+function ParseStringUpakovka(s: string): String;
+var
+  p: Integer;
+begin
+  s := Trim(Copy(s, 1, Pos('шт', s) - 1));
+  if not(s = '') then
+  begin
+    p := LastDelimiter(' ', s);
+    Result := Copy(s, p, Length(s) - p + 1);
+  end
+  else
+    Result := '0';
+end;
+
+
 
 end.

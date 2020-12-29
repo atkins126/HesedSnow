@@ -219,7 +219,6 @@ inherited frmVidomost: TfrmVidomost
         Action = acbtnCreateVidomist
         Anchors = [akRight, akBottom]
         TabOrder = 0
-        ExplicitTop = 8
       end
       object cbVidomist: TDBComboBoxEh
         Left = 128

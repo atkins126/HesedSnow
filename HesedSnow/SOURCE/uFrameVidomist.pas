@@ -141,7 +141,7 @@ end;
 procedure TfrmVidomost.ImportExcel;
 var
   i, m, n, col, z: integer;
-  ListExcel: Variant;
+//  ListExcel: Variant;
   CollectionNameTable: TDictionary<string, integer>;
 begin
 
@@ -157,7 +157,7 @@ begin
     // MyExcel.Workbooks[1].Worksheets.Count; //кол-во листов в документе
     myForm.ProgressBar.Visible := True;
     MyExcel.ActiveWorkBook.Sheets[1];
-    ListExcel := MyExcel.ActiveWorkBook.Sheets[1];
+//    ListExcel := MyExcel.ActiveWorkBook.Sheets[1];
 
     col := MyExcel.ActiveCell.SpecialCells($000000B).Column;
     // последняя заполненная колонка
@@ -263,7 +263,7 @@ begin
   end;
 
   MyExcel.Application.DisplayAlerts := False;
-  ListExcel := Unassigned;
+//  ListExcel := Unassigned;
   StopExcel;
   CollectionNameTable.Clear;
   CollectionNameTable.Free;

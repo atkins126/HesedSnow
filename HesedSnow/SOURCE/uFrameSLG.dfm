@@ -98,6 +98,8 @@ inherited frmSLG: TfrmSLG
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDragDrop = sDBGrid1DragDrop
+        OnKeyPress = sDBGrid1KeyPress
       end
       object sEdit1: TsEdit
         Left = 1
@@ -106,6 +108,7 @@ inherited frmSLG: TfrmSLG
         Height = 21
         Align = alTop
         TabOrder = 1
+        OnChange = sEdit1Change
         ExplicitLeft = 16
         ExplicitTop = 48
         ExplicitWidth = 121
@@ -126,6 +129,7 @@ inherited frmSLG: TfrmSLG
         Height = 21
         Align = alTop
         TabOrder = 0
+        OnChange = sEdit2Change
         ExplicitLeft = 117
         ExplicitTop = 40
         ExplicitWidth = 121
@@ -137,6 +141,7 @@ inherited frmSLG: TfrmSLG
         Height = 449
         Align = alClient
         Color = 15921906
+        DataSource = DM.dsQslg
         DrawingStyle = gdsGradient
         GradientEndColor = 13353918
         GradientStartColor = 14539223
@@ -152,6 +157,7 @@ inherited frmSLG: TfrmSLG
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnKeyPress = sDBGrid2KeyPress
       end
     end
     object Panel3: TPanel
@@ -265,18 +271,28 @@ inherited frmSLG: TfrmSLG
     Top = 237
     object btnDelStroka: TAction
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1089#1090#1088#1086#1082#1091
+      OnExecute = Button3Click
+      OnUpdate = btnDelStrokaUpdate
     end
     object btnClearList: TAction
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1089#1087#1080#1089#1086#1082
+      OnExecute = Button4Click
+      OnUpdate = btnClearListUpdate
     end
     object btnExportExcel: TAction
       Caption = #1045#1082#1089#1087#1086#1088#1090' '#1074' Excel'
+      OnExecute = Button2Click
+      OnUpdate = btnExportExcelUpdate
     end
     object btnLoadTempFile: TAction
       Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100
+      OnExecute = Button6Click
+      OnUpdate = btnLoadTempFileUpdate
     end
     object btnSaveTempFile: TAction
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+      OnExecute = Button5Click
+      OnUpdate = btnSaveTempFileUpdate
     end
   end
   object OpenDialog: TOpenDialog

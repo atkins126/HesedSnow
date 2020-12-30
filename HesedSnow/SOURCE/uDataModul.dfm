@@ -68,4 +68,40 @@ object DM: TDM
     Left = 80
     Top = 120
   end
+  object dsQslg: TDataSource
+    DataSet = qQslg
+    Left = 128
+    Top = 168
+  end
+  object qQslg: TADOQuery
+    Active = True
+    Connection = myConnection
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'select * from slg_items')
+    Left = 128
+    Top = 120
+  end
+  object tSLG: TADOTable
+    Connection = myConnection
+    CursorType = ctStatic
+    TableName = 'slg_items'
+    Left = 128
+    Top = 64
+    object tSLGName_SLG: TWideStringField
+      FieldName = 'Name_SLG'
+      Size = 60
+    end
+    object tSLGActive: TBooleanField
+      FieldName = 'Active'
+    end
+    object tSLGPrice_inch: TBCDField
+      FieldName = 'Price_inch'
+      Precision = 19
+    end
+    object tSLGupakovka: TIntegerField
+      FieldName = 'upakovka'
+    end
+  end
 end

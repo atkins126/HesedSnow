@@ -20,6 +20,13 @@ type
     tUslugy: TADOTable;
     dsUslugy: TDataSource;
     qUslugy: TADOQuery;
+    dsQslg: TDataSource;
+    qQslg: TADOQuery;
+    tSLG: TADOTable;
+    tSLGName_SLG: TWideStringField;
+    tSLGActive: TBooleanField;
+    tSLGPrice_inch: TBCDField;
+    tSLGupakovka: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }

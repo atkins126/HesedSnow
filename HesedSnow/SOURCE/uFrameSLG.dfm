@@ -10,9 +10,6 @@ inherited frmSLG: TfrmSLG
     Height = 41
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = 232
-    ExplicitTop = 72
-    ExplicitWidth = 185
     DesignSize = (
       895
       41)
@@ -29,6 +26,7 @@ inherited frmSLG: TfrmSLG
       Top = 10
       Width = 23
       Height = 22
+      Anchors = [akTop, akRight]
     end
     object SpeedButton1: TSpeedButton
       Left = 734
@@ -47,10 +45,6 @@ inherited frmSLG: TfrmSLG
     Height = 474
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 208
-    ExplicitTop = 304
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object Splitter1: TSplitter
       Left = 653
       Top = 1
@@ -74,8 +68,16 @@ inherited frmSLG: TfrmSLG
       Align = alLeft
       Caption = 'Panel1'
       TabOrder = 0
-      ExplicitHeight = 462
-      object sDBGrid1: TsDBGrid
+      object sEdit1: TsEdit
+        Left = 1
+        Top = 1
+        Width = 238
+        Height = 21
+        Align = alTop
+        TabOrder = 0
+        OnChange = sEdit1Change
+      end
+      object MyDBGrid1: TMyDBGrid
         Left = 1
         Top = 22
         Width = 238
@@ -92,26 +94,14 @@ inherited frmSLG: TfrmSLG
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 0
+        TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
-        OnDragDrop = sDBGrid1DragDrop
-        OnKeyPress = sDBGrid1KeyPress
-      end
-      object sEdit1: TsEdit
-        Left = 1
-        Top = 1
-        Width = 238
-        Height = 21
-        Align = alTop
-        TabOrder = 1
-        OnChange = sEdit1Change
-        ExplicitLeft = 16
-        ExplicitTop = 48
-        ExplicitWidth = 121
+        OnKeyPress = MyDBGrid1KeyPress
+        Row = 1
       end
     end
     object Panel2: TPanel
@@ -130,9 +120,6 @@ inherited frmSLG: TfrmSLG
         Align = alTop
         TabOrder = 0
         OnChange = sEdit2Change
-        ExplicitLeft = 117
-        ExplicitTop = 40
-        ExplicitWidth = 121
       end
       object sDBGrid2: TsDBGrid
         Left = 1
@@ -168,10 +155,6 @@ inherited frmSLG: TfrmSLG
       Align = alClient
       Caption = 'Panel3'
       TabOrder = 2
-      ExplicitLeft = 0
-      ExplicitTop = 41
-      ExplicitWidth = 895
-      ExplicitHeight = 474
       object Panel4: TPanel
         Left = 1
         Top = 1
@@ -179,7 +162,6 @@ inherited frmSLG: TfrmSLG
         Height = 29
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 893
         DesignSize = (
           407
           29)
@@ -199,7 +181,6 @@ inherited frmSLG: TfrmSLG
           Action = btnClearList
           Anchors = [akTop, akRight]
           TabOrder = 1
-          ExplicitLeft = 790
         end
         object Button5: TButton
           Left = 103
@@ -234,8 +215,6 @@ inherited frmSLG: TfrmSLG
         FixedFont.Height = -11
         FixedFont.Name = 'Tahoma'
         FixedFont.Style = []
-        ExplicitWidth = 893
-        ExplicitHeight = 443
       end
     end
   end
@@ -246,9 +225,6 @@ inherited frmSLG: TfrmSLG
     Height = 41
     Align = alBottom
     TabOrder = 2
-    ExplicitLeft = 216
-    ExplicitTop = 256
-    ExplicitWidth = 185
     DesignSize = (
       895
       41)

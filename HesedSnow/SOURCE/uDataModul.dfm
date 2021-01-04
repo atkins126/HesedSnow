@@ -58,6 +58,7 @@ object DM: TDM
     Top = 168
   end
   object qUslugy: TADOQuery
+    Active = True
     Connection = myConnection
     CursorType = ctStatic
     Parameters = <>

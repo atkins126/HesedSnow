@@ -11,7 +11,8 @@ uses
   uMyProcedure in '..\SOURCE\uMyProcedure.pas',
   uMyExcel in '..\SOURCE\uMyExcel.pas',
   uDataModul in '..\SOURCE\uDataModul.pas' {DM: TDataModule},
-  uBDlogic in '..\SOURCE\uBDlogic.pas';
+  uBDlogic in '..\SOURCE\uBDlogic.pas',
+  MyDBGrid in '..\Component\MyDBGrid.pas';
 
 {$R *.res}
 

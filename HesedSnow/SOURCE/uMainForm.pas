@@ -12,7 +12,7 @@ uses
   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, sComboBoxes, sLabel, JvExExtCtrls,
   JvExtComponent, JvClock, dxGDIPlusClasses, ES.BaseControls, ES.Images,
   Vcl.ExtCtrls, sPanel, sStatusBar, Vcl.Forms, sScrollBox, sFrameBar, sSplitter,
-  sMonthCalendar, acProgressBar;
+  sMonthCalendar, acProgressBar, Vcl.Imaging.pngimage;
 
 type
   TFrameClass = class of TCustomInfoFrame;

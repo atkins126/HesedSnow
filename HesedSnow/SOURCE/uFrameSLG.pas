@@ -8,7 +8,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   uFrameCustom, sFrameAdapter, Data.DB, Vcl.StdCtrls, Vcl.Grids, JvExGrids,
   JvStringGrid, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Buttons, System.Actions,
-  Vcl.ActnList, sPanel, acDBGrid, sEdit;
+  Vcl.ActnList, sPanel, acDBGrid, sEdit, MyDBGrid;
 
 type
   TfrmSLG = class(TCustomInfoFrame)
@@ -37,10 +37,10 @@ type
     Button2: TButton;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
-    sDBGrid1: TsDBGrid;
     sEdit1: TsEdit;
     sEdit2: TsEdit;
     sDBGrid2: TsDBGrid;
+    MyDBGrid1: TMyDBGrid;
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -50,14 +50,13 @@ type
     procedure Button2Click(Sender: TObject);
     procedure sEdit1Change(Sender: TObject);
     procedure sEdit2Change(Sender: TObject);
-    procedure sDBGrid1DragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure sDBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure sDBGrid2KeyPress(Sender: TObject; var Key: Char);
     procedure btnDelStrokaUpdate(Sender: TObject);
     procedure btnClearListUpdate(Sender: TObject);
     procedure btnExportExcelUpdate(Sender: TObject);
     procedure btnLoadTempFileUpdate(Sender: TObject);
     procedure btnSaveTempFileUpdate(Sender: TObject);
+    procedure MyDBGrid1KeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     procedure ShapkaStringGrida;
@@ -261,14 +260,7 @@ begin
       'slg_chernovik.txt');
 end;
 
-procedure TfrmSLG.sDBGrid1DragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-  inherited;
-  // действия по ококнчании перетаскивания
-
-end;
-
-procedure TfrmSLG.sDBGrid1KeyPress(Sender: TObject; var Key: Char);
+procedure TfrmSLG.MyDBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
   last_row: Integer;
 begin
@@ -277,11 +269,11 @@ begin
   begin
     last_row := StringGrid1.RowCount;
     StringGrid1.RowCount := StringGrid1.RowCount + 1; // Добавление строки
-    StringGrid1.Cells[0, last_row] := sDBGrid1.DataSource.DataSet.FieldByName
+    StringGrid1.Cells[0, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('RITM').AsString;
-    StringGrid1.Cells[1, last_row] := sDBGrid1.DataSource.DataSet.FieldByName
+    StringGrid1.Cells[1, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('JDCID').AsString;
-    StringGrid1.Cells[2, last_row] := sDBGrid1.DataSource.DataSet.FieldByName
+    StringGrid1.Cells[2, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('FIO').AsString;
     // StringGrid1.Cells[4, last_row] := DBGrid1.DataSource.DataSet.FieldByName('Number').AsString;
     AutoStringGridWidth;
@@ -468,18 +460,18 @@ begin
         begin
           tSLG.Insert;
 
-          tSLG.FieldByName('Name_SLG').AsString := MyExcel.Cells[m, 1].value;
+          tSLG.FieldByName('Name_SLG').AsString := MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Название СЛГ'].ToString)].value;
 
-          if MyExcel.Cells[m, 3].value = 'ВЕРНО' then
+          if MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Действительно'].ToString)].value = 'ВЕРНО' then
             tSLG.FieldByName('Active').AsBoolean := true
           else
             tSLG.FieldByName('Active').AsBoolean := false;
 
           tSLG.FieldByName('Price_inch').AsCurrency :=
-            StrToCurr(MyExcel.Cells[m, 4].value);
+            StrToCurr(MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Цена за единицу'].ToString)].value);
 
           tSLG.FieldByName('upakovka').AsInteger :=
-            ParseStringUpakovka(MyExcel.Cells[m, 1].value).ToInteger;
+            ParseStringUpakovka(MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Название СЛГ'].ToString)].value).ToInteger;
 
           tSLG.Post;
           Inc(m);
@@ -496,7 +488,8 @@ begin
     CollectionNameTable.Free;
     DM.tUslugy.Active := false;
     myForm.ProgressBar.Visible := false;
-
+    DM.qQslg.Active := false;
+    DM.qQslg.Active := true;
   end;
 
 end;
@@ -594,7 +587,8 @@ begin
     CollectionNameTable.Free;
     DM.tUslugy.Active := false;
     myForm.ProgressBar.Visible := false;
-
+    DM.qUslugy.Active := false;
+    DM.qUslugy.Active := true;
   end;
 
 end;

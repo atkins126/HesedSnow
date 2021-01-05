@@ -2,13 +2,11 @@ unit uFrameSLG;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, System.Generics.Collections,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  uFrameCustom, sFrameAdapter, Data.DB, Vcl.StdCtrls, Vcl.Grids, JvExGrids,
-  JvStringGrid, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Buttons, System.Actions,
-  Vcl.ActnList, sPanel, acDBGrid, sEdit, MyDBGrid;
+uses uFrameCustom, Data.DB, Vcl.DBGrids, acDBGrid, MyDBGrid, Vcl.Dialogs,
+  System.Classes, System.Actions, Vcl.ActnList, Vcl.Grids, JvExGrids,
+  JvStringGrid, Vcl.StdCtrls, sEdit, Vcl.ExtCtrls, Vcl.Controls, Vcl.Buttons,
+  sPanel, sFrameAdapter, System.SysUtils, System.Generics.Collections,
+  Vcl.Forms, System.Variants, System.UITypes;
 
 type
   TfrmSLG = class(TCustomInfoFrame)
@@ -22,13 +20,12 @@ type
     btnLoadTempFile: TAction;
     btnSaveTempFile: TAction;
     SpeedButton2: TSpeedButton;
-    SpeedButton3: TSpeedButton;
     SpeedButton1: TSpeedButton;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
-    StringGrid1: TJvStringGrid;
+    StringGrid: TJvStringGrid;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
@@ -39,8 +36,8 @@ type
     Splitter2: TSplitter;
     sEdit1: TsEdit;
     sEdit2: TsEdit;
-    sDBGrid2: TsDBGrid;
     MyDBGrid1: TMyDBGrid;
+    MyDBGrid2: TMyDBGrid;
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -50,13 +47,20 @@ type
     procedure Button2Click(Sender: TObject);
     procedure sEdit1Change(Sender: TObject);
     procedure sEdit2Change(Sender: TObject);
-    procedure sDBGrid2KeyPress(Sender: TObject; var Key: Char);
     procedure btnDelStrokaUpdate(Sender: TObject);
     procedure btnClearListUpdate(Sender: TObject);
     procedure btnExportExcelUpdate(Sender: TObject);
     procedure btnLoadTempFileUpdate(Sender: TObject);
     procedure btnSaveTempFileUpdate(Sender: TObject);
     procedure MyDBGrid1KeyPress(Sender: TObject; var Key: Char);
+    procedure MyDBGrid1MouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
+    procedure StringGridMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure StringGridDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure StringGridDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure MyDBGrid2KeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     procedure ShapkaStringGrida;
@@ -73,11 +77,14 @@ implementation
 uses uMyProcedure, uMainForm, uDataModul, uMyExcel;
 { TfrmSLG }
 
+var
+  SourceCol, SourceRow: Integer; // Источника колонка и строка координаты
+
 procedure TfrmSLG.AfterCreation;
 begin
   inherited;
   ShapkaStringGrida;
-  StringGrid1.RowCount := 1;
+  StringGrid.RowCount := 1;
   DM.qUslugy.Active := true;
   DM.qQslg.Active := true;
 end;
@@ -87,9 +94,9 @@ var
   X, Y, w: Integer;
   MaxWidth: Integer;
 begin
-  with StringGrid1 do
+  with StringGrid do
     ClientHeight := DefaultRowHeight * RowCount + 5;
-  with StringGrid1 do
+  with StringGrid do
   begin
     for X := 0 to ColCount - 1 do
     begin
@@ -103,14 +110,13 @@ begin
       ColWidths[X] := MaxWidth + 5;
     end;
   end;
-
-  // if StringGrid1.RowCount = 3 then StringGrid1.ColWidths[5] := 250;
 end;
 
+// ------- actions -----------------------------------
 procedure TfrmSLG.btnClearListUpdate(Sender: TObject);
 begin // Очистить список
   inherited;
-  if (StringGrid1.RowCount > 1) then
+  if (StringGrid.RowCount > 1) then
     Button4.Enabled := true
   else
     Button4.Enabled := false;
@@ -119,7 +125,7 @@ end;
 procedure TfrmSLG.btnDelStrokaUpdate(Sender: TObject);
 begin // Удалить строку
   inherited;
-  if (StringGrid1.RowCount > 1) then
+  if (StringGrid.RowCount > 1) then
     Button3.Enabled := true
   else
     Button3.Enabled := false;
@@ -128,36 +134,37 @@ end;
 procedure TfrmSLG.btnExportExcelUpdate(Sender: TObject);
 begin // Єкспортировать в ексель
   inherited;
-  if (StringGrid1.RowCount > 1) then
+  if (StringGrid.RowCount > 1) then
     Button2.Enabled := true
   else
     Button2.Enabled := false;
 end;
 
 procedure TfrmSLG.btnLoadTempFileUpdate(Sender: TObject);
-begin
+begin  // Загрузить временный файл
   inherited;
-  if (StringGrid1.RowCount > 1) then
+  if (StringGrid.RowCount > 1) then
     Button6.Enabled := false
   else
     Button6.Enabled := true;
 end;
 
 procedure TfrmSLG.btnSaveTempFileUpdate(Sender: TObject);
-begin
+begin // сохранить временный файл
   inherited;
-  if (StringGrid1.RowCount > 1) then
+  if (StringGrid.RowCount > 1) then
     Button5.Enabled := true
   else
     Button5.Enabled := false;
 end;
+//========================================================
 
 procedure TfrmSLG.Button2Click(Sender: TObject);
 var // Експорт в Ексель
   Sheets, ExcelApp: variant;
   i, j: Integer;
-  s, FileNameS: String;
-  d: TDate;
+  FileNameS: String;
+
 begin
   inherited;
   if uMyExcel.RunExcel(false, false) = true then
@@ -189,10 +196,10 @@ begin
   MyExcel.Range['F1'].value := 'Стоимость';
   MyExcel.Range['G1'].value := 'Примечание';
 
-  for i := 1 to StringGrid1.RowCount - 1 do // строки
-    for j := 0 to StringGrid1.ColCount - 1 do // столбцы
+  for i := 1 to StringGrid.RowCount - 1 do // строки
+    for j := 0 to StringGrid.ColCount - 1 do // столбцы
     begin
-      MyExcel.Cells[i + 1, j + 1] := StringGrid1.Cells[j, i];
+      MyExcel.Cells[i + 1, j + 1] := StringGrid.Cells[j, i];
     end;
 
   FileNameS := ExtractFilePath(ParamStr(0)) + 'СЛГ_' +
@@ -212,25 +219,25 @@ var // Удаляем выделенную позицию
   n: Integer;
 begin
   inherited;
-  // Если осталась одна строка, опероацию удаления не выполнять
-  if (StringGrid1.RowCount = 1) then
+  // Если осталась одна строка, операцию удаления не выполнять
+  if (StringGrid.RowCount = 1) then
     Exit;
   // Сдвиг строки вверх, начиная со строки, содержащей выделенную
-  for n := StringGrid1.Row to StringGrid1.RowCount - 2 do
+  for n := StringGrid.Row to StringGrid.RowCount - 2 do
   begin
-    StringGrid1.Rows[n] := StringGrid1.Rows[n + 1];
+    StringGrid.Rows[n] := StringGrid.Rows[n + 1];
   end;
   // Удаление последней строки таблицы
-  StringGrid1.RowCount := StringGrid1.RowCount - 1;
+  StringGrid.RowCount := StringGrid.RowCount - 1;
 
 end;
 
 procedure TfrmSLG.Button4Click(Sender: TObject);
 var
   i, j: Integer;
-begin
+begin   // Очистить список
   inherited;
-  with StringGrid1 do
+  with StringGrid do
   begin
     for i := FixedCols to ColCount - 1 do
     begin
@@ -242,13 +249,13 @@ begin
     end;
   end;
 
-  StringGrid1.RowCount := 1;
+  StringGrid.RowCount := 1;
 end;
 
 procedure TfrmSLG.Button5Click(Sender: TObject);
 begin
   inherited;
-  StringGrid1.SaveToFile(ExtractFilePath(Application.ExeName) +
+  StringGrid.SaveToFile(ExtractFilePath(Application.ExeName) +
     'slg_chernovik.txt');
 end;
 
@@ -256,7 +263,7 @@ procedure TfrmSLG.Button6Click(Sender: TObject);
 begin
   inherited;
   if FileExists(ExtractFilePath(Application.ExeName) + 'slg_chernovik.txt') then
-    StringGrid1.LoadFromFile(ExtractFilePath(Application.ExeName) +
+    StringGrid.LoadFromFile(ExtractFilePath(Application.ExeName) +
       'slg_chernovik.txt');
 end;
 
@@ -267,20 +274,20 @@ begin
   inherited;
   if (Key = #13) then // если нажат Enter
   begin
-    last_row := StringGrid1.RowCount;
-    StringGrid1.RowCount := StringGrid1.RowCount + 1; // Добавление строки
-    StringGrid1.Cells[0, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
+    last_row := StringGrid.RowCount;
+    StringGrid.RowCount := StringGrid.RowCount + 1; // Добавление строки
+    StringGrid.Cells[0, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('RITM').AsString;
-    StringGrid1.Cells[1, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
+    StringGrid.Cells[1, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('JDCID').AsString;
-    StringGrid1.Cells[2, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
+    StringGrid.Cells[2, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('FIO').AsString;
     // StringGrid1.Cells[4, last_row] := DBGrid1.DataSource.DataSet.FieldByName('Number').AsString;
     AutoStringGridWidth;
   end;
 end;
 
-procedure TfrmSLG.sDBGrid2KeyPress(Sender: TObject; var Key: Char);
+procedure TfrmSLG.MyDBGrid2KeyPress(Sender: TObject; var Key: Char);
 var // вібор средств гигиені
   select_row: Integer;
   colvo, upakovka: Integer;
@@ -293,39 +300,37 @@ begin
   inherited;
   if (Key = #13) then // если нажат Enter
   begin
-    select_row := StringGrid1.Tag;
+    select_row := StringGrid.Tag;
     if select_row = 0 then
       select_row := select_row + 1;
     if select_row <> 0 then
     begin
 
       sEdit1.text := '';
-      izdelie := sDBGrid2.DataSource.DataSet.FieldByName('Name_SLG').AsString;
-      upakovka := sDBGrid2.DataSource.DataSet.FieldByName('upakovka').AsInteger;
-      Price_inch := sDBGrid2.DataSource.DataSet.FieldByName('Price_inch')
+      izdelie := MyDBGrid2.DataSource.DataSet.FieldByName('Name_SLG').AsString;
+      upakovka := MyDBGrid2.DataSource.DataSet.FieldByName('upakovka')
+        .AsInteger;
+      Price_inch := MyDBGrid2.DataSource.DataSet.FieldByName('Price_inch')
         .AsCurrency;
 
     ups:
-      if // (
-        (StringGrid1.Cells[3, select_row] <> '')
-      // or (select_row >= StringGrid1.RowCount - 1 ))
-      then
+      if (StringGrid.Cells[3, select_row] <> '')  then
       begin
         buttonSelected := MessageDlg('Редактировать запись?', mtCustom,
           [mbYes, mbNo], 0);
 
         if buttonSelected = mrYes then
         begin
-          StringGrid1.Row := select_row;
-          StringGrid1.Cells[3, select_row] := izdelie;
+          StringGrid.Row := select_row;
+          StringGrid.Cells[3, select_row] := izdelie;
           // Price_inch       upakovka
           colvo := StrToInt(InputBox(izdelie, 'Введите кол-во', ''));
-          StringGrid1.Cells[5, select_row] :=
+          StringGrid.Cells[5, select_row] :=
             ((colvo / upakovka) * Price_inch).ToString;
-          StringGrid1.Cells[4, select_row] := colvo.ToString;
+          StringGrid.Cells[4, select_row] := colvo.ToString;
           AutoStringGridWidth;
-          if select_row <> StringGrid1.RowCount - 1 then
-            StringGrid1.Row := StringGrid1.Row + 1;
+          if select_row <> StringGrid.RowCount - 1 then
+            StringGrid.Row := StringGrid.Row + 1;
         end
         else
         begin
@@ -336,16 +341,16 @@ begin
       end
       else
       begin
-        StringGrid1.Row := select_row;
-        StringGrid1.Cells[3, select_row] := izdelie;
+        StringGrid.Row := select_row;
+        StringGrid.Cells[3, select_row] := izdelie;
         // Price_inch       upakovka
         colvo := StrToInt(InputBox(izdelie, 'Введите кол-во', ''));
-        StringGrid1.Cells[5, select_row] :=
+        StringGrid.Cells[5, select_row] :=
           ((colvo / upakovka) * Price_inch).ToString;
-        StringGrid1.Cells[4, select_row] := colvo.ToString;
+        StringGrid.Cells[4, select_row] := colvo.ToString;
         AutoStringGridWidth;
-        if select_row <> StringGrid1.RowCount - 1 then
-          StringGrid1.Row := StringGrid1.Row + 1;
+        if select_row <> StringGrid.RowCount - 1 then
+          StringGrid.Row := StringGrid.Row + 1;
       end;
 
     end;
@@ -378,8 +383,8 @@ var
 begin
   inherited;
   a1 := sEdit2.text + '%';
+// Функция добавляет символ одиночной кавычки ( ' ) в начало и конец строки
   a2 := QuotedStr(a1);
-  // Функция добавляет символ одиночной кавычки ( ' ) в начало и конец строки
   with DM.qQslg do
   begin
     Close;
@@ -395,14 +400,14 @@ end;
 procedure TfrmSLG.ShapkaStringGrida;
 begin
   // Заголовки грида
-  StringGrid1.Cells[0, 0] := 'Номер услуги';
-  StringGrid1.Cells[1, 0] := 'JDC ID';
-  StringGrid1.Cells[2, 0] := 'ФИО';
-  StringGrid1.Cells[3, 0] := 'Средство личной гигиены';
-  StringGrid1.ColWidths[3] := 250;
-  StringGrid1.Cells[4, 0] := 'Количество';
-  StringGrid1.Cells[5, 0] := 'Стоимость';
-  StringGrid1.Cells[6, 0] := 'Примечание';
+  StringGrid.Cells[0, 0] := 'Номер услуги';
+  StringGrid.Cells[1, 0] := 'JDC ID';
+  StringGrid.Cells[2, 0] := 'ФИО';
+  StringGrid.Cells[3, 0] := 'Средство личной гигиены';
+  StringGrid.ColWidths[3] := 250;
+  StringGrid.Cells[4, 0] := 'Количество';
+  StringGrid.Cells[5, 0] := 'Стоимость';
+  StringGrid.Cells[6, 0] := 'Примечание';
 end;
 
 procedure TfrmSLG.SpeedButton1Click(Sender: TObject);
@@ -416,7 +421,6 @@ begin
 
   with myForm, DM do
   begin
-
     OpenDialog.Filter := 'Файлы MS Excel|*.xls;*.xlsx|';
     if not OpenDialog.Execute then
       Exit;
@@ -431,8 +435,7 @@ begin
         // последняя заполненная колонка
         col := MyExcel.ActiveCell.SpecialCells($000000B).Column;
 
-        // ------------ пробежимся расставим индексы названий столбцов -------------
-
+        // ------------ пробежимся расставим индексы названий столбцов ---------
         CollectionNameTable := TDictionary<string, Integer>.Create();
         for z := 1 to col do
         begin
@@ -460,18 +463,26 @@ begin
         begin
           tSLG.Insert;
 
-          tSLG.FieldByName('Name_SLG').AsString := MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Название СЛГ'].ToString)].value;
+          tSLG.FieldByName('Name_SLG').AsString :=
+            MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Название СЛГ']
+            .ToString)].value;
 
-          if MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Действительно'].ToString)].value = 'ВЕРНО' then
+          if MyExcel.Cells
+            [m, StrToInt(CollectionNameTable.Items['Действительно'].ToString)
+            ].value = 'ВЕРНО' then
             tSLG.FieldByName('Active').AsBoolean := true
           else
             tSLG.FieldByName('Active').AsBoolean := false;
 
           tSLG.FieldByName('Price_inch').AsCurrency :=
-            StrToCurr(MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Цена за единицу'].ToString)].value);
+            StrToCurr(MyExcel.Cells[m,
+            StrToInt(CollectionNameTable.Items['Цена за единицу']
+            .ToString)].value);
 
           tSLG.FieldByName('upakovka').AsInteger :=
-            ParseStringUpakovka(MyExcel.Cells[m, StrToInt(CollectionNameTable.Items['Название СЛГ'].ToString)].value).ToInteger;
+            ParseStringUpakovka(MyExcel.Cells[m,
+            StrToInt(CollectionNameTable.Items['Название СЛГ'].ToString)].value)
+            .ToInteger;
 
           tSLG.Post;
           Inc(m);
@@ -591,6 +602,105 @@ begin
     DM.qUslugy.Active := true;
   end;
 
+end;
+
+// ---------- реализуем Drag and Drop -------------------------
+
+procedure TfrmSLG.MyDBGrid1MouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited;
+  if ssLeft in Shift then
+    TMyDBGrid(Sender).BeginDrag(false);
+end;
+
+procedure TfrmSLG.StringGridDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  Acol, ARow: Integer;
+begin // разрешение на прием
+  inherited;
+  StringGrid.MouseToCell(X, Y, Acol, ARow);
+  Accept := (Sender = Source) and (Acol > 0) and (ARow > 0) or
+    (Source is TMyDBGrid);
+end;
+
+procedure TfrmSLG.StringGridMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  // Преобразовать координаты мыши X, Y в (для StringGrid) связанных номеров столбцов и строк
+  StringGrid.MouseToCell(X, Y, SourceCol, SourceRow);
+  // Разрешить перетаскивание, только если была нажата приемлемая ячейка (ячейка за фиксированным столбцом и строкой)
+  if (SourceCol > 0) and (SourceRow > 0) then
+    // Начните перетаскивание после перемещения мыши на 4 пикселя.
+    StringGrid.BeginDrag(false, 4);
+end;
+
+procedure TfrmSLG.StringGridDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  DestCol, DestRow, i, colvo, upakovka: Integer;
+  izdelie: String;
+  Price_inch: real;
+begin // после перетаскивания
+  inherited;
+  with Sender as TStringGrid do
+  begin
+    // конвертировать координаты мыши.
+    StringGrid.MouseToCell(X, Y, DestCol, DestRow);
+
+    // Переместить содержимое из источника в место назначения
+    if Source = StringGrid then
+    begin
+      for i := 3 to StringGrid.ColCount - 1 do
+      begin
+        StringGrid.Cells[i, DestRow] := StringGrid.Cells[i, SourceRow];
+      end;
+
+    end;
+    // Drag into DBGrids
+    if Source = MyDBGrid1 then
+    begin
+      DestCol := 1;
+      DestRow := StringGrid.RowCount;
+      StringGrid.RowCount := StringGrid.RowCount + 1; // Добавление строки
+
+      StringGrid.Cells[DestCol - 1, DestRow] := MyDBGrid1.Fields[2].AsString;
+      StringGrid.Cells[DestCol, DestRow] := MyDBGrid1.Fields[1].AsString;
+      StringGrid.Cells[DestCol + 1, DestRow] := MyDBGrid1.Fields[0].AsString;
+      AutoStringGridWidth;
+    end;
+    if Source = MyDBGrid2 then
+    begin
+      if StringGrid.RowCount > 1 then
+      begin
+        DestCol := 3;
+        StringGrid.Cells[DestCol, DestRow] := MyDBGrid2.Fields[0].AsString;
+        // StringGrid.Cells[DestCol + 1, DestRow] := MyDBGrid2.Fields[2].AsString;
+
+        izdelie := MyDBGrid2.DataSource.DataSet.FieldByName('Name_SLG')
+          .AsString;
+        upakovka := MyDBGrid2.DataSource.DataSet.FieldByName('upakovka')
+          .AsInteger;
+        Price_inch := MyDBGrid2.DataSource.DataSet.FieldByName('Price_inch')
+          .AsCurrency;
+
+        colvo := StrToInt(InputBox(izdelie, 'Введите кол-во', ''));
+
+        StringGrid.Cells[5, DestRow] :=
+          ((colvo / upakovka) * Price_inch).ToString;
+
+        StringGrid.Cells[4, DestRow] := colvo.ToString;
+
+        AutoStringGridWidth;
+
+        if DestRow <> StringGrid.RowCount - 1 then
+          StringGrid.Row := StringGrid.Row + 1;
+
+      end;
+    end;
+
+  end;
 end;
 
 end.

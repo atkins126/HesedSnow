@@ -140,7 +140,7 @@ end;
 
 procedure TfrmVidomost.ImportExcel;
 var
-  i, m, n, col, z: integer;
+  m, n, col, z: integer;
 //  ListExcel: Variant;
   CollectionNameTable: TDictionary<string, integer>;
 begin

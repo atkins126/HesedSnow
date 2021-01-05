@@ -33,7 +33,7 @@ object myForm: TmyForm
     VertScrollBar.Range = 36
     VertScrollBar.Tracking = True
     AutoScroll = False
-    TabOrder = 0
+    TabOrder = 1
     SkinData.SkinSection = 'BAR'
     ActiveFrameIndex = -1
     Spacing = 0
@@ -88,7 +88,8 @@ object myForm: TmyForm
     Height = 495
     Align = alClient
     Caption = 'panConteiner'
-    TabOrder = 2
+    TabOrder = 0
+    TabStop = True
   end
   object sPanel2: TsPanel
     Left = 0

@@ -1,9 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{12E5FDBF-D372-4802-AB7B-E72486712826}</ProjectGuid>
+        <ProjectGuid>{2B04F637-250F-4C31-BDED-61EA851368AB}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="HesedSnow.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="G:\My Projects\Delphi\dragDrop\project1\drag.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -23,14 +26,23 @@
     <Target Name="HesedSnow:Make">
         <MSBuild Projects="HesedSnow.dproj" Targets="Make"/>
     </Target>
+    <Target Name="drag">
+        <MSBuild Projects="G:\My Projects\Delphi\dragDrop\project1\drag.dproj"/>
+    </Target>
+    <Target Name="drag:Clean">
+        <MSBuild Projects="G:\My Projects\Delphi\dragDrop\project1\drag.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="drag:Make">
+        <MSBuild Projects="G:\My Projects\Delphi\dragDrop\project1\drag.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="HesedSnow"/>
+        <CallTarget Targets="HesedSnow;drag"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="HesedSnow:Clean"/>
+        <CallTarget Targets="HesedSnow:Clean;drag:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="HesedSnow:Make"/>
+        <CallTarget Targets="HesedSnow:Make;drag:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

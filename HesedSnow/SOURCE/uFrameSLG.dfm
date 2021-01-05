@@ -21,13 +21,6 @@ inherited frmSLG: TfrmSLG
       Caption = #1048#1084#1087#1086#1088#1090' '#1091#1089#1083#1091#1075' '#1057#1051#1043
       OnClick = SpeedButton2Click
     end
-    object SpeedButton3: TSpeedButton
-      Left = 705
-      Top = 10
-      Width = 23
-      Height = 22
-      Anchors = [akTop, akRight]
-    end
     object SpeedButton1: TSpeedButton
       Left = 734
       Top = 8
@@ -93,6 +86,7 @@ inherited frmSLG: TfrmSLG
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         ParentFont = False
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
@@ -101,6 +95,7 @@ inherited frmSLG: TfrmSLG
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         OnKeyPress = MyDBGrid1KeyPress
+        OnMouseMove = MyDBGrid1MouseMove
         Row = 1
       end
     end
@@ -121,7 +116,7 @@ inherited frmSLG: TfrmSLG
         TabOrder = 0
         OnChange = sEdit2Change
       end
-      object sDBGrid2: TsDBGrid
+      object MyDBGrid2: TMyDBGrid
         Left = 1
         Top = 22
         Width = 236
@@ -137,6 +132,7 @@ inherited frmSLG: TfrmSLG
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         ParentFont = False
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
@@ -144,7 +140,9 @@ inherited frmSLG: TfrmSLG
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
-        OnKeyPress = sDBGrid2KeyPress
+        OnKeyPress = MyDBGrid2KeyPress
+        OnMouseMove = MyDBGrid1MouseMove
+        Row = 1
       end
     end
     object Panel3: TPanel
@@ -199,7 +197,7 @@ inherited frmSLG: TfrmSLG
           TabOrder = 3
         end
       end
-      object StringGrid1: TJvStringGrid
+      object StringGrid: TJvStringGrid
         Left = 1
         Top = 30
         Width = 407
@@ -209,6 +207,9 @@ inherited frmSLG: TfrmSLG
         FixedCols = 0
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing]
         TabOrder = 1
+        OnDragDrop = StringGridDragDrop
+        OnDragOver = StringGridDragOver
+        OnMouseDown = StringGridMouseDown
         Alignment = taLeftJustify
         FixedFont.Charset = DEFAULT_CHARSET
         FixedFont.Color = clWindowText
@@ -239,12 +240,12 @@ inherited frmSLG: TfrmSLG
     end
   end
   inherited sFrameAdapter1: TsFrameAdapter
-    Left = 40
-    Top = 132
+    Left = 456
+    Top = 444
   end
   object acList: TActionList
-    Left = 39
-    Top = 237
+    Left = 607
+    Top = 445
     object btnDelStroka: TAction
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1089#1090#1088#1086#1082#1091
       OnExecute = Button3Click
@@ -274,7 +275,7 @@ inherited frmSLG: TfrmSLG
   object OpenDialog: TOpenDialog
     Filter = 'xlsx|*.xlsx'
     InitialDir = #1047#1072#1074#1072#1085#1090#1072#1078#1077#1085#1085#1103
-    Left = 40
-    Top = 181
+    Left = 544
+    Top = 445
   end
 end

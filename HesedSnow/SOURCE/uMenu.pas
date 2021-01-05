@@ -10,10 +10,10 @@ uses
 
 type
   TfrmMenu = class(TFrame)
-    btnVidomist: TsBitBtn;
     btnSLG: TsBitBtn;
     btnNalogy: TsBitBtn;
     sFrameAdapter1: TsFrameAdapter;
+    sBitBtn1: TsBitBtn;
     procedure btnVidomistClick(Sender: TObject);
     procedure btnSLGClick(Sender: TObject);
     procedure btnNalogyClick(Sender: TObject);

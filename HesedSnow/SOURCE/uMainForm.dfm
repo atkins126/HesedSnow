@@ -2,7 +2,7 @@ object myForm: TmyForm
   Left = 0
   Top = 0
   Caption = 'myForm'
-  ClientHeight = 571
+  ClientHeight = 575
   ClientWidth = 986
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object myForm: TmyForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -18,7 +19,7 @@ object myForm: TmyForm
   object sSplitter1: TsSplitter
     Left = 185
     Top = 57
-    Height = 495
+    Height = 499
     SizingByClick = True
     ShowGrip = True
     ExplicitTop = -4
@@ -28,7 +29,7 @@ object myForm: TmyForm
     Left = 0
     Top = 57
     Width = 185
-    Height = 495
+    Height = 499
     HorzScrollBar.Visible = False
     VertScrollBar.Range = 36
     VertScrollBar.Tracking = True
@@ -48,7 +49,7 @@ object myForm: TmyForm
       end>
     object sMonthCalendar1: TsMonthCalendar
       Left = 0
-      Top = 352
+      Top = 356
       Width = 181
       SkinData.SkinSection = 'TRANSPARENT'
       Align = alBottom
@@ -62,7 +63,7 @@ object myForm: TmyForm
   end
   object statusBar: TsStatusBar
     Left = 0
-    Top = 552
+    Top = 556
     Width = 986
     Height = 19
     Anchors = [akRight, akBottom]
@@ -85,7 +86,7 @@ object myForm: TmyForm
     Left = 191
     Top = 57
     Width = 795
-    Height = 495
+    Height = 499
     Align = alClient
     Caption = 'panConteiner'
     TabOrder = 0
@@ -37288,5 +37289,9 @@ object myForm: TmyForm
     SubStorages = <>
     Left = 903
     Top = 270
+  end
+  object OpenDialog: TOpenDialog
+    Left = 903
+    Top = 329
   end
 end

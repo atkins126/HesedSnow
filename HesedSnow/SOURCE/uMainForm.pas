@@ -12,7 +12,7 @@ uses
   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, sComboBoxes, sLabel, JvExExtCtrls,
   JvExtComponent, JvClock, dxGDIPlusClasses, ES.BaseControls, ES.Images,
   Vcl.ExtCtrls, sPanel, sStatusBar, Vcl.Forms, sScrollBox, sFrameBar, sSplitter,
-  sMonthCalendar, acProgressBar, Vcl.Imaging.pngimage;
+  sMonthCalendar, acProgressBar, Vcl.Imaging.pngimage, Vcl.Dialogs;
 
 type
   TFrameClass = class of TCustomInfoFrame;
@@ -35,12 +35,14 @@ type
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     sMonthCalendar1: TsMonthCalendar;
     ProgressBar: TsProgressBar;
+    OpenDialog: TOpenDialog;
     procedure sFrameBar1Items0CreateFrame(Sender: TObject;
       var Frame: TCustomFrame);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure statusBarDrawPanel(statusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -69,7 +71,7 @@ implementation
 
 {$R *.dfm}
 
-uses uMenu, uDataModul, uFrameVidomist;
+uses uMenu, uDataModul, uFrameVidomist, uMyProcedure;
 
 { TForm2 }
 
@@ -87,6 +89,11 @@ begin
   myForm.UpdateFrame(Sender);
 end;
 
+procedure TmyForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+if panConteiner.Tag = 1 then DecimalChange(',');
+end;
+
 procedure TmyForm.FormCreate(Sender: TObject);
 begin
   with ProgressBar do
@@ -95,6 +102,13 @@ begin
     Position := 1;
     statusBar.Panels[2].Style := psOwnerDraw;
   end;
+
+  if isDesimal()=',' then
+  begin
+   DecimalChange('.');
+   panConteiner.Tag := 1;
+  end;
+
 end;
 
 procedure TmyForm.statusBarDrawPanel(statusBar: TStatusBar; Panel: TStatusPanel;

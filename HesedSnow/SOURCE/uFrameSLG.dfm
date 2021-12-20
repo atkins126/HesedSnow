@@ -203,7 +203,7 @@ inherited frmSLG: TfrmSLG
         Width = 407
         Height = 441
         Align = alClient
-        ColCount = 7
+        ColCount = 9
         FixedCols = 0
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing]
         TabOrder = 1

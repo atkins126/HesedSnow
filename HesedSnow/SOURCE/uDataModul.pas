@@ -3,7 +3,8 @@ unit uDataModul;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB, DBAccess, Uni,
+  UniProvider, MySQLUniProvider, MemDS;
 
   { System.Actions,
   Vcl.ActnList, IDETheme.ActnCtrls, Vcl.ActnMan;}
@@ -14,7 +15,7 @@ type
     myConnection: TADOConnection;
     dsVedomist: TDataSource;
     qQuery: TADOQuery;
-    ADOTable1: TADOTable;
+    tPodopechnie: TADOTable;
     DataSource1: TDataSource;
     ADOQuery1: TADOQuery;
     tUslugy: TADOTable;
@@ -27,6 +28,17 @@ type
     tSLGActive: TBooleanField;
     tSLGPrice_inch: TBCDField;
     tSLGupakovka: TIntegerField;
+    tUslusgyDavayPodkl: TADOTable;
+    tTemaDavayPodkl: TADOTable;
+    dsTemaDP: TDataSource;
+    tTemaDavayPodklData: TWideStringField;
+    tTemaDavayPodklTema: TWideStringField;
+    qTemaDP: TADOQuery;
+    MySQLUniProvider: TMySQLUniProvider;
+    UniConnection: TUniConnection;
+    UniQuery1: TUniQuery;
+    UniDataSource1: TUniDataSource;
+    UniTable1: TUniTable;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }

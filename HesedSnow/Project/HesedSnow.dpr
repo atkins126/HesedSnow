@@ -12,7 +12,10 @@ uses
   uMyExcel in '..\SOURCE\uMyExcel.pas',
   uDataModul in '..\SOURCE\uDataModul.pas' {DM: TDataModule},
   uBDlogic in '..\SOURCE\uBDlogic.pas',
-  MyDBGrid in '..\Component\MyDBGrid.pas';
+  MyDBGrid in '..\Component\MyDBGrid.pas',
+  uFrameDavayPodkl in '..\SOURCE\uFrameDavayPodkl.pas' {frmFrameDavayPodkl: TFrame},
+  uFrameUtils in '..\SOURCE\uFrameUtils.pas' {frmUtils: TFrame},
+  uFrameImportBD in '..\SOURCE\uFrameImportBD.pas' {frmImportBD: TFrame};
 
 {$R *.res}
 

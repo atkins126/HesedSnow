@@ -6,7 +6,8 @@ uses uFrameCustom, Data.DB, Vcl.DBGrids, acDBGrid, MyDBGrid, Vcl.Dialogs,
   System.Classes, System.Actions, Vcl.ActnList, Vcl.Grids, JvExGrids,
   JvStringGrid, Vcl.StdCtrls, sEdit, Vcl.ExtCtrls, Vcl.Controls, Vcl.Buttons,
   sPanel, sFrameAdapter, System.SysUtils, System.Generics.Collections,
-  Vcl.Forms, System.Variants, System.UITypes;
+  Vcl.Forms, System.Variants, System.UITypes, Winapi.ShellAPI, Winapi.Windows;
+
 
 type
   TfrmSLG = class(TCustomInfoFrame)
@@ -64,10 +65,12 @@ type
   private
     { Private declarations }
     procedure ShapkaStringGrida;
-    procedure AutoStringGridWidth; // подгонка ширині колонок
+
   public
     { Public declarations }
     procedure AfterCreation; override;
+    // procedure AutoStringGridWidth; // подгонка ширині колонок
+
   end;
 
 implementation
@@ -89,28 +92,28 @@ begin
   DM.qQslg.Active := true;
 end;
 
-procedure TfrmSLG.AutoStringGridWidth;
-var
+{ procedure TfrmSLG.AutoStringGridWidth;
+  var
   X, Y, w: Integer;
   MaxWidth: Integer;
-begin
+  begin
   with StringGrid do
-    ClientHeight := DefaultRowHeight * RowCount + 5;
+  ClientHeight := DefaultRowHeight * RowCount + 5;
   with StringGrid do
   begin
-    for X := 0 to ColCount - 1 do
-    begin
-      MaxWidth := 0;
-      for Y := 0 to RowCount - 1 do
-      begin
-        w := Canvas.TextWidth(Cells[X, Y]);
-        if w > MaxWidth then
-          MaxWidth := w;
-      end;
-      ColWidths[X] := MaxWidth + 5;
-    end;
+  for X := 0 to ColCount - 1 do
+  begin
+  MaxWidth := 0;
+  for Y := 0 to RowCount - 1 do
+  begin
+  w := Canvas.TextWidth(Cells[X, Y]);
+  if w > MaxWidth then
+  MaxWidth := w;
   end;
-end;
+  ColWidths[X] := MaxWidth + 5;
+  end;
+  end;
+  end; }
 
 // ------- actions -----------------------------------
 procedure TfrmSLG.btnClearListUpdate(Sender: TObject);
@@ -141,7 +144,7 @@ begin // Єкспортировать в ексель
 end;
 
 procedure TfrmSLG.btnLoadTempFileUpdate(Sender: TObject);
-begin  // Загрузить временный файл
+begin // Загрузить временный файл
   inherited;
   if (StringGrid.RowCount > 1) then
     Button6.Enabled := false
@@ -157,13 +160,13 @@ begin // сохранить временный файл
   else
     Button5.Enabled := false;
 end;
-//========================================================
+// ========================================================
 
 procedure TfrmSLG.Button2Click(Sender: TObject);
 var // Експорт в Ексель
   Sheets, ExcelApp: variant;
   i, j: Integer;
-  FileNameS: String;
+  DirectoryNow, FileNameS: String;
 
 begin
   inherited;
@@ -187,6 +190,8 @@ begin
   ExcelApp.columns[5].columnwidth := 10;
   ExcelApp.columns[6].columnwidth := 10;
   ExcelApp.columns[7].columnwidth := 10;
+  ExcelApp.columns[8].columnwidth := 10;
+  ExcelApp.columns[9].columnwidth := 10;
 
   MyExcel.Range['A1'].value := 'Номер услуги';
   MyExcel.Range['B1'].value := 'JDC ID';
@@ -194,7 +199,9 @@ begin
   MyExcel.Range['D1'].value := 'Средство личной гигиены';
   MyExcel.Range['E1'].value := 'Количество';
   MyExcel.Range['F1'].value := 'Стоимость';
-  MyExcel.Range['G1'].value := 'Примечание';
+  MyExcel.Range['G1'].value := 'Цена за единицу';
+  MyExcel.Range['H1'].value := 'Пересчитать общую стоимость';
+  MyExcel.Range['I1'].value := 'Примечание';
 
   for i := 1 to StringGrid.RowCount - 1 do // строки
     for j := 0 to StringGrid.ColCount - 1 do // столбцы
@@ -202,8 +209,12 @@ begin
       MyExcel.Cells[i + 1, j + 1] := StringGrid.Cells[j, i];
     end;
 
-  FileNameS := ExtractFilePath(ParamStr(0)) + 'СЛГ_' +
-    FormatDateTime('dd.mm.yyyy', Now) + '.xlsx';
+  DirectoryNow := ExtractFilePath(ParamStr(0))+ 'Данные\СЛГ\';
+
+  if not DirectoryExists('DirectoryNow') then ForceDirectories(DirectoryNow);
+// ForceDirectories(ExtractFilePath(Application.ExeName) + '/folder1/folder2/newfolder');
+
+  FileNameS := DirectoryNow + 'СЛГ_' + FormatDateTime('dd.mm.yyyy hh_mm_ss', Now) + '.xlsx';
 
   uMyExcel.SaveWorkBook(FileNameS, 1);
 
@@ -212,6 +223,11 @@ begin
   uMyExcel.StopExcel;
 
   ShowMessage('Данные экспортированы и сохранены в файл');
+
+ //   ShellExecute(Handle, 'open', PWideChar(DirectoryNow), nil, nil,SW_SHOWNORMAL);
+
+   ShellExecute(Handle, 'open', PWideChar(DirectoryNow), nil, nil,SW_SHOWNORMAL);
+
 end;
 
 procedure TfrmSLG.Button3Click(Sender: TObject);
@@ -235,7 +251,7 @@ end;
 procedure TfrmSLG.Button4Click(Sender: TObject);
 var
   i, j: Integer;
-begin   // Очистить список
+begin // Очистить список
   inherited;
   with StringGrid do
   begin
@@ -283,7 +299,9 @@ begin
     StringGrid.Cells[2, last_row] := MyDBGrid1.DataSource.DataSet.FieldByName
       ('FIO').AsString;
     // StringGrid1.Cells[4, last_row] := DBGrid1.DataSource.DataSet.FieldByName('Number').AsString;
-    AutoStringGridWidth;
+    AutoStringGridWidth(StringGrid);
+          // переместить в конец стрингрида
+      StringGrid.Row := StringGrid.RowCount - 1;
   end;
 end;
 
@@ -314,7 +332,7 @@ begin
         .AsCurrency;
 
     ups:
-      if (StringGrid.Cells[3, select_row] <> '')  then
+      if (StringGrid.Cells[3, select_row] <> '') then
       begin
         buttonSelected := MessageDlg('Редактировать запись?', mtCustom,
           [mbYes, mbNo], 0);
@@ -327,8 +345,10 @@ begin
           colvo := StrToInt(InputBox(izdelie, 'Введите кол-во', ''));
           StringGrid.Cells[5, select_row] :=
             ((colvo / upakovka) * Price_inch).ToString;
-          StringGrid.Cells[4, select_row] := colvo.ToString;
-          AutoStringGridWidth;
+
+          StringGrid.Cells[7, select_row] := '0';
+
+          AutoStringGridWidth(StringGrid);
           if select_row <> StringGrid.RowCount - 1 then
             StringGrid.Row := StringGrid.Row + 1;
         end
@@ -348,7 +368,8 @@ begin
         StringGrid.Cells[5, select_row] :=
           ((colvo / upakovka) * Price_inch).ToString;
         StringGrid.Cells[4, select_row] := colvo.ToString;
-        AutoStringGridWidth;
+        StringGrid.Cells[7, select_row] := '0';
+        AutoStringGridWidth(StringGrid);
         if select_row <> StringGrid.RowCount - 1 then
           StringGrid.Row := StringGrid.Row + 1;
       end;
@@ -383,7 +404,7 @@ var
 begin
   inherited;
   a1 := sEdit2.text + '%';
-// Функция добавляет символ одиночной кавычки ( ' ) в начало и конец строки
+  // Функция добавляет символ одиночной кавычки ( ' ) в начало и конец строки
   a2 := QuotedStr(a1);
   with DM.qQslg do
   begin
@@ -407,7 +428,9 @@ begin
   StringGrid.ColWidths[3] := 250;
   StringGrid.Cells[4, 0] := 'Количество';
   StringGrid.Cells[5, 0] := 'Стоимость';
-  StringGrid.Cells[6, 0] := 'Примечание';
+  StringGrid.Cells[6, 0] := 'Цена за единицу';
+  StringGrid.Cells[7, 0] := 'Пересчитать общую стоимость';
+  StringGrid.Cells[8, 0] := 'Примечание';
 end;
 
 procedure TfrmSLG.SpeedButton1Click(Sender: TObject);
@@ -568,7 +591,8 @@ begin
 
           tUslugy.FieldByName('FIO').AsString :=
             MyExcel.Cells
-            [m, StrToInt(CollectionNameTable.Items['ФИО'].ToString)].value;
+            [m, StrToInt(CollectionNameTable.Items['Клиент'].ToString)].value;
+          // [m, StrToInt(CollectionNameTable.Items['ФИО'].ToString)].value;
 
           tUslugy.FieldByName('SABA').AsCurrency :=
             MyExcel.Cells
@@ -650,7 +674,7 @@ begin // после перетаскивания
     StringGrid.MouseToCell(X, Y, DestCol, DestRow);
 
     // Переместить содержимое из источника в место назначения
-    if Source = StringGrid then
+    if Source = StringGrid then // ---- СЕРЕДИНА стринггрид ---------
     begin
       for i := 3 to StringGrid.ColCount - 1 do
       begin
@@ -659,7 +683,7 @@ begin // после перетаскивания
 
     end;
     // Drag into DBGrids
-    if Source = MyDBGrid1 then
+    if Source = MyDBGrid1 then // ------- СЛЕВА грид с ФИО ------
     begin
       DestCol := 1;
       DestRow := StringGrid.RowCount;
@@ -668,9 +692,11 @@ begin // после перетаскивания
       StringGrid.Cells[DestCol - 1, DestRow] := MyDBGrid1.Fields[2].AsString;
       StringGrid.Cells[DestCol, DestRow] := MyDBGrid1.Fields[1].AsString;
       StringGrid.Cells[DestCol + 1, DestRow] := MyDBGrid1.Fields[0].AsString;
-      AutoStringGridWidth;
+      AutoStringGridWidth(StringGrid);
+      // переместить в конец стрингрида
+      StringGrid.Row := StringGrid.RowCount - 1;
     end;
-    if Source = MyDBGrid2 then
+    if Source = MyDBGrid2 then // ---- СПРАВА грид -------------------------
     begin
       if StringGrid.RowCount > 1 then
       begin
@@ -692,15 +718,15 @@ begin // после перетаскивания
 
         StringGrid.Cells[4, DestRow] := colvo.ToString;
 
-        AutoStringGridWidth;
+        StringGrid.Cells[7, DestRow] := '0';
 
-        if DestRow <> StringGrid.RowCount - 1 then
-          StringGrid.Row := StringGrid.Row + 1;
+        AutoStringGridWidth(StringGrid);
 
       end;
     end;
 
   end;
+
 end;
 
 end.
